@@ -18,44 +18,43 @@
 
   .status-card {
     width: 100%;
-    max-width: 400px;
+    max-width: 440px;
     margin: 0 auto;
     text-align: center;
-    padding: 4px 0;
+    padding: 0;
   }
 
-  /* === BIG STATUS INDICATOR === */
-  .status-ring {
-    width: 72px;
-    height: 72px;
+  /* === ICON === */
+  .status-icon {
+    width: 56px;
+    height: 56px;
     border-radius: 50%;
-    margin: 0 auto 14px;
+    margin: 0 auto 12px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 32px;
-    transition: all 0.5s ease;
+    font-size: 26px;
   }
 
-  .status-ring.ok {
-    background: #dcfce7;
-    box-shadow: 0 0 0 5px #bbf7d0;
-  }
-
-  .status-ring.down {
+  .status-icon.down {
     background: #fee2e2;
-    box-shadow: 0 0 0 5px #fecaca;
-    animation: ring-pulse 2s ease-in-out infinite;
+    box-shadow: 0 0 0 4px #fecaca;
+    animation: pulse 2s ease-in-out infinite;
   }
 
-  .status-ring.slow {
+  .status-icon.ok {
+    background: #dcfce7;
+    box-shadow: 0 0 0 4px #bbf7d0;
+  }
+
+  .status-icon.slow {
     background: #fef3c7;
-    box-shadow: 0 0 0 5px #fde68a;
+    box-shadow: 0 0 0 4px #fde68a;
   }
 
-  @keyframes ring-pulse {
-    0%, 100% { box-shadow: 0 0 0 5px #fecaca; }
-    50% { box-shadow: 0 0 0 10px rgba(254, 202, 202, 0.4); }
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 0 0 4px #fecaca; }
+    50% { box-shadow: 0 0 0 8px rgba(254, 202, 202, 0.3); }
   }
 
   /* === HEADLINE === */
@@ -63,41 +62,63 @@
     font-size: 18px;
     font-weight: 800;
     letter-spacing: -0.4px;
-    margin-bottom: 8px;
-    line-height: 1.2;
+    margin-bottom: 10px;
   }
 
-  .status-headline.ok { color: #16a34a; }
   .status-headline.down { color: #dc2626; }
+  .status-headline.ok { color: #16a34a; }
   .status-headline.slow { color: #d97706; }
 
-  /* === EXPLANATION === */
-  .status-explain {
+  /* === BODY TEXT === */
+  .status-body {
     font-size: 13.5px;
-    color: #475569;
-    line-height: 1.55;
-    margin-bottom: 12px;
-    padding: 0 4px;
+    color: #444;
+    line-height: 1.6;
+    margin-bottom: 14px;
+    padding: 0 8px;
   }
+
+  /* === PHONE CTA === */
+  .phone-cta {
+    display: inline-block;
+    font-size: 15px;
+    font-weight: 700;
+    color: #0055a4;
+    margin-bottom: 14px;
+    text-decoration: none;
+  }
+
+  .phone-cta:hover { opacity: 0.7; }
+
+  /* === DETAILS LINK === */
+  .details-link {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 600;
+    color: #0055a4;
+    text-decoration: none;
+    margin-bottom: 8px;
+  }
+
+  .details-link:hover { text-decoration: underline; }
 
   /* === FOOTER === */
   .status-footer {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 6px;
-    padding-top: 6px;
+    gap: 5px;
   }
 
-  .status-footer-dot {
+  .status-dot {
     width: 5px;
     height: 5px;
     border-radius: 50%;
     animation: blink 2s ease-in-out infinite;
   }
 
-  .status-footer-dot.live { background: #10b981; }
-  .status-footer-dot.alert { background: #ef4444; }
+  .status-dot.live { background: #10b981; }
+  .status-dot.alert { background: #ef4444; }
 
   @keyframes blink {
     0%, 100% { opacity: 1; }
@@ -106,47 +127,24 @@
 
   .status-footer span {
     font-size: 10px;
-    color: #94a3b8;
+    color: #a7a9ac;
     font-weight: 500;
   }
 
-  .details-link {
-    display: inline-block;
-    margin-bottom: 14px;
-    font-size: 13px;
-    font-weight: 600;
-    color: #0055a4;
-    text-decoration: none;
-    transition: opacity 0.2s;
-  }
-
-  .details-link:hover {
-    opacity: 0.7;
-    text-decoration: underline;
-  }
-
   /* === LOADING === */
-  .loading {
-    padding: 36px;
-    text-align: center;
-  }
+  .loading { padding: 30px; text-align: center; }
 
   .loading-spinner {
-    width: 22px;
-    height: 22px;
+    width: 20px; height: 20px;
     border: 2.5px solid #e2e8f0;
-    border-top-color: #6366f1;
+    border-top-color: #0055a4;
     border-radius: 50%;
     animation: spin 0.7s linear infinite;
-    margin: 0 auto 10px;
+    margin: 0 auto 8px;
   }
 
   @keyframes spin { to { transform: rotate(360deg); } }
-
-  .loading-text {
-    font-size: 13px;
-    color: #94a3b8;
-  }
+  .loading-text { font-size: 12px; color: #a7a9ac; }
 </style>
 </head>
 <body>
@@ -169,42 +167,38 @@
   function render(services) {
     const el = document.getElementById('statusCard');
     const downCount = services.filter(s => s.status === 'down').length;
-    const total = services.length;
     const allUp = downCount === 0;
     const degraded = !allUp && downCount <= 1;
 
-    let ring, emoji, headline, headlineCls, explain, dotCls;
+    let icon, iconCls, headline, headlineCls, body, dotCls;
 
     if (allUp) {
-      ring = 'ok';
-      emoji = '✅';
-      headline = 'Email Is Working';
-      headlineCls = 'ok';
-      explain = 'Our email is fully operational. You can send us a message and expect a timely response.';
+      icon = '✅'; iconCls = 'ok';
+      headline = 'Email Is Working'; headlineCls = 'ok';
+      body = 'Our email is fully operational. You can send us a message and expect a timely response.';
       dotCls = 'live';
     } else if (degraded) {
-      ring = 'slow';
-      emoji = '⚠️';
-      headline = 'Email May Be Delayed';
-      headlineCls = 'slow';
-      explain = 'Microsoft is experiencing minor issues. Emails may be delayed. If your matter is urgent, please call us directly.';
+      icon = '⚠️'; iconCls = 'slow';
+      headline = 'Email May Be Delayed'; headlineCls = 'slow';
+      body = 'Microsoft is experiencing minor issues that may delay email delivery. Your loan file is still being actively worked. If you need a quick response, please call us directly:';
       dotCls = 'alert';
     } else {
-      ring = 'down';
-      emoji = '🚫';
-      headline = 'Email Is Down';
-      headlineCls = 'down';
-      explain = 'Microsoft Outlook is experiencing a nationwide outage. We cannot send or receive emails right now. Please call us directly for immediate assistance.';
+      icon = '🚫'; iconCls = 'down';
+      headline = 'Email Is Currently Down'; headlineCls = 'down';
+      body = 'A widespread Microsoft Outlook outage is preventing us from sending or receiving email. Your loan file is still being actively worked — this does not affect our internal systems. For anything time-sensitive, please call us directly:';
       dotCls = 'alert';
     }
 
+    const showPhone = !allUp;
+
     el.innerHTML = `
-      <div class="status-ring ${ring}">${emoji}</div>
+      <div class="status-icon ${iconCls}">${icon}</div>
       <div class="status-headline ${headlineCls}">${headline}</div>
-      <div class="status-explain">${explain}</div>
+      <div class="status-body">${body}</div>
+      ${showPhone ? '<a class="phone-cta" href="tel:+16168554300">📞 (616) 855-4300</a><br>' : ''}
       <a class="details-link" href="https://theanomalous.github.io/isitup/widget.html" target="_blank">View Detailed Status →</a>
       <div class="status-footer">
-        <div class="status-footer-dot ${dotCls}"></div>
+        <div class="status-dot ${dotCls}"></div>
         <span>Live · Checked every 5 min</span>
       </div>`;
   }
