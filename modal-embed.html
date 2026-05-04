@@ -18,135 +18,66 @@
 
   .status-card {
     width: 100%;
-    max-width: 420px;
+    max-width: 400px;
     margin: 0 auto;
     text-align: center;
+    padding: 4px 0;
   }
 
   /* === BIG STATUS INDICATOR === */
   .status-ring {
-    width: 80px;
-    height: 80px;
+    width: 72px;
+    height: 72px;
     border-radius: 50%;
-    margin: 0 auto 16px;
+    margin: 0 auto 14px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 36px;
+    font-size: 32px;
     transition: all 0.5s ease;
   }
 
   .status-ring.ok {
     background: #dcfce7;
-    box-shadow: 0 0 0 6px #bbf7d0, 0 0 20px rgba(34, 197, 94, 0.15);
+    box-shadow: 0 0 0 5px #bbf7d0;
   }
 
   .status-ring.down {
     background: #fee2e2;
-    box-shadow: 0 0 0 6px #fecaca, 0 0 20px rgba(239, 68, 68, 0.15);
+    box-shadow: 0 0 0 5px #fecaca;
     animation: ring-pulse 2s ease-in-out infinite;
   }
 
-  .status-ring.partial {
+  .status-ring.slow {
     background: #fef3c7;
-    box-shadow: 0 0 0 6px #fde68a, 0 0 20px rgba(245, 158, 11, 0.15);
-    animation: ring-pulse 3s ease-in-out infinite;
+    box-shadow: 0 0 0 5px #fde68a;
   }
 
   @keyframes ring-pulse {
-    0%, 100% { box-shadow: 0 0 0 6px var(--pulse-color, #fecaca), 0 0 20px var(--pulse-glow, rgba(239, 68, 68, 0.15)); }
-    50% { box-shadow: 0 0 0 10px var(--pulse-color, #fecaca), 0 0 30px var(--pulse-glow, rgba(239, 68, 68, 0.25)); }
+    0%, 100% { box-shadow: 0 0 0 5px #fecaca; }
+    50% { box-shadow: 0 0 0 10px rgba(254, 202, 202, 0.4); }
   }
 
   /* === HEADLINE === */
   .status-headline {
-    font-size: 20px;
+    font-size: 18px;
     font-weight: 800;
-    letter-spacing: -0.5px;
-    margin-bottom: 6px;
+    letter-spacing: -0.4px;
+    margin-bottom: 8px;
     line-height: 1.2;
   }
 
   .status-headline.ok { color: #16a34a; }
   .status-headline.down { color: #dc2626; }
-  .status-headline.partial { color: #d97706; }
+  .status-headline.slow { color: #d97706; }
 
   /* === EXPLANATION === */
   .status-explain {
-    font-size: 14px;
+    font-size: 13.5px;
     color: #475569;
-    line-height: 1.6;
-    margin-bottom: 20px;
-    padding: 0 8px;
-  }
-
-  /* === SIMPLE 3-CHECK GRID === */
-  .check-grid {
-    display: flex;
-    flex-direction: column;
-    gap: 0;
-    border: 1px solid #e2e8f0;
-    border-radius: 10px;
-    overflow: hidden;
-    margin-bottom: 16px;
-  }
-
-  .check-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 12px 16px;
-    border-bottom: 1px solid #f1f5f9;
-  }
-
-  .check-row:last-child { border-bottom: none; }
-
-  .check-label {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 14px;
-    font-weight: 600;
-    color: #334155;
-  }
-
-  .check-icon {
-    width: 28px;
-    height: 28px;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 14px;
-    flex-shrink: 0;
-  }
-
-  .check-icon.ok { background: #dcfce7; }
-  .check-icon.down { background: #fee2e2; }
-  .check-icon.partial { background: #fef3c7; }
-
-  .check-status {
-    font-size: 12px;
-    font-weight: 700;
-    padding: 3px 10px;
-    border-radius: 6px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
-
-  .check-status.ok {
-    background: #dcfce7;
-    color: #16a34a;
-  }
-
-  .check-status.down {
-    background: #fee2e2;
-    color: #dc2626;
-  }
-
-  .check-status.partial {
-    background: #fef3c7;
-    color: #d97706;
+    line-height: 1.55;
+    margin-bottom: 12px;
+    padding: 0 4px;
   }
 
   /* === FOOTER === */
@@ -155,14 +86,13 @@
     align-items: center;
     justify-content: center;
     gap: 6px;
-    padding-top: 4px;
+    padding-top: 6px;
   }
 
   .status-footer-dot {
     width: 5px;
     height: 5px;
     border-radius: 50%;
-    background: #94a3b8;
     animation: blink 2s ease-in-out infinite;
   }
 
@@ -175,30 +105,20 @@
   }
 
   .status-footer span {
-    font-size: 11px;
+    font-size: 10px;
     color: #94a3b8;
     font-weight: 500;
   }
 
-  .status-footer a {
-    font-size: 11px;
-    color: #6366f1;
-    text-decoration: none;
-    font-weight: 600;
-    margin-left: 8px;
-  }
-
-  .status-footer a:hover { text-decoration: underline; }
-
   /* === LOADING === */
   .loading {
-    padding: 40px;
+    padding: 36px;
     text-align: center;
   }
 
   .loading-spinner {
-    width: 24px;
-    height: 24px;
+    width: 22px;
+    height: 22px;
     border: 2.5px solid #e2e8f0;
     border-top-color: #6366f1;
     border-radius: 50%;
@@ -228,132 +148,48 @@
   const CONFIG = {
     owner: 'TheAnomalous',
     repo: 'isitup',
-    statusPageUrl: 'https://theanomalous.github.io/isitup/',
     refreshInterval: 60000
   };
 
-  // Map raw service names into 3 consumer-friendly categories:
-  //   "Sending & Receiving" — can email flow?
-  //   "Accessing Email"     — can you open your inbox?
-  //   "Signing In"          — can you log in?
-  const CATEGORIES = [
-    {
-      label: 'Sending & Receiving Email',
-      icon: '📨',
-      keywords: ['smtp', 'mx', 'imap', 'mail delivery', 'mail api']
-    },
-    {
-      label: 'Accessing Your Inbox',
-      icon: '📬',
-      keywords: ['webmail', 'outlook web', 'outlook office', '365 portal', 'mobile sync', 'office.com', 'graph']
-    },
-    {
-      label: 'Signing Into Outlook',
-      icon: '🔐',
-      keywords: ['login', 'azure ad', 'auth', 'microsoftonline']
-    }
-  ];
-
-  function categorize(services) {
-    const cats = CATEGORIES.map(c => ({ ...c, services: [], allUp: true, anyDown: false }));
-
-    for (const s of services) {
-      const lower = s.name.toLowerCase();
-      for (const cat of cats) {
-        if (cat.keywords.some(kw => lower.includes(kw))) {
-          cat.services.push(s);
-          if (s.status !== 'up') cat.allUp = false;
-          if (s.status === 'down') cat.anyDown = true;
-          break;
-        }
-      }
-    }
-
-    return cats;
-  }
-
-  function getOverallStatus(cats) {
-    const anyDown = cats.some(c => c.anyDown);
-    const allUp = cats.every(c => c.allUp);
-
-    if (allUp) {
-      return {
-        ring: 'ok',
-        emoji: '✅',
-        headline: 'Email Is Working Normally',
-        headlineCls: 'ok',
-        explain: 'Our email system is fully operational. You can send us an email and expect a timely response.',
-        footerDot: 'live'
-      };
-    }
-
-    // Check if sending/receiving or inbox access is down — that's what matters
-    const sendRecv = cats[0]; // Sending & Receiving
-    const inbox = cats[1];    // Accessing Inbox
-
-    if (sendRecv.anyDown || inbox.anyDown) {
-      return {
-        ring: 'down',
-        emoji: '🚫',
-        headline: 'Email Is Currently Down',
-        headlineCls: 'down',
-        explain: 'Microsoft Outlook is experiencing a nationwide outage. We cannot send or receive emails right now. Please call us directly for immediate assistance.',
-        footerDot: 'alert'
-      };
-    }
-
-    // Only auth or minor issues
-    return {
-      ring: 'partial',
-      emoji: '⚠️',
-      headline: 'Email May Be Delayed',
-      headlineCls: 'partial',
-      explain: 'Some Microsoft Outlook services are experiencing issues. Emails may be delayed. If your matter is urgent, please call us directly.',
-      footerDot: 'alert'
-    };
-  }
-
   function render(services) {
     const el = document.getElementById('statusCard');
-    const cats = categorize(services);
-    const overall = getOverallStatus(cats);
+    const downCount = services.filter(s => s.status === 'down').length;
+    const total = services.length;
+    const allUp = downCount === 0;
+    const degraded = !allUp && downCount <= 1;
 
-    let checksHtml = '';
-    for (const cat of cats) {
-      let statusCls, statusText;
-      if (cat.services.length === 0) {
-        statusCls = 'ok';
-        statusText = 'OK';
-      } else if (cat.anyDown) {
-        statusCls = 'down';
-        statusText = 'Down';
-      } else if (!cat.allUp) {
-        statusCls = 'partial';
-        statusText = 'Slow';
-      } else {
-        statusCls = 'ok';
-        statusText = 'Working';
-      }
+    let ring, emoji, headline, headlineCls, explain, dotCls;
 
-      checksHtml += `
-        <div class="check-row">
-          <div class="check-label">
-            <div class="check-icon ${statusCls}">${cat.icon}</div>
-            ${cat.label}
-          </div>
-          <div class="check-status ${statusCls}">${statusText}</div>
-        </div>`;
+    if (allUp) {
+      ring = 'ok';
+      emoji = '✅';
+      headline = 'Email Is Working';
+      headlineCls = 'ok';
+      explain = 'Our email is fully operational. You can send us a message and expect a timely response.';
+      dotCls = 'live';
+    } else if (degraded) {
+      ring = 'slow';
+      emoji = '⚠️';
+      headline = 'Email May Be Delayed';
+      headlineCls = 'slow';
+      explain = 'Microsoft is experiencing minor issues. Emails may be delayed. If your matter is urgent, please call us directly.';
+      dotCls = 'alert';
+    } else {
+      ring = 'down';
+      emoji = '🚫';
+      headline = 'Email Is Down';
+      headlineCls = 'down';
+      explain = 'Microsoft Outlook is experiencing a nationwide outage. We cannot send or receive emails right now. Please call us directly for immediate assistance.';
+      dotCls = 'alert';
     }
 
     el.innerHTML = `
-      <div class="status-ring ${overall.ring}">${overall.emoji}</div>
-      <div class="status-headline ${overall.headlineCls}">${overall.headline}</div>
-      <div class="status-explain">${overall.explain}</div>
-      <div class="check-grid">${checksHtml}</div>
+      <div class="status-ring ${ring}">${emoji}</div>
+      <div class="status-headline ${headlineCls}">${headline}</div>
+      <div class="status-explain">${explain}</div>
       <div class="status-footer">
-        <div class="status-footer-dot ${overall.footerDot}"></div>
-        <span>Live status · Auto-refreshes</span>
-        <a href="${CONFIG.statusPageUrl}" target="_blank">Details →</a>
+        <div class="status-footer-dot ${dotCls}"></div>
+        <span>Live · Checked every 5 min</span>
       </div>`;
   }
 
@@ -367,7 +203,7 @@
       console.error('Fetch failed:', e);
       document.getElementById('statusCard').innerHTML = `
         <div class="loading">
-          <div class="loading-text">⚠️ Unable to check email status right now</div>
+          <div class="loading-text">⚠️ Unable to check email status</div>
         </div>`;
     }
   }
