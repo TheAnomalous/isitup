@@ -178,65 +178,46 @@
     transition: all 0.5s ease;
   }
 
-  /* === SEVERITY GRADIENT BAR === */
+  /* === SEVERITY GAUGE BAR === */
   .severity-bar-wrapper {
     padding: 0 20px 14px;
   }
 
-  .severity-bar {
-    height: 8px;
-    border-radius: 4px;
+  .severity-track {
+    height: 6px;
+    border-radius: 3px;
     background: linear-gradient(90deg,
       #34d399 0%,
-      #a3e635 25%,
-      #fbbf24 50%,
-      #f97316 75%,
+      #a3e635 20%,
+      #fbbf24 45%,
+      #f97316 70%,
       #ef4444 100%
     );
     position: relative;
     overflow: visible;
   }
 
-  .severity-bar::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: 4px;
-    background: rgba(0,0,0,0.55);
-  }
-
-  .severity-bar-fill {
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 100%;
-    border-radius: 4px;
-    background: linear-gradient(90deg,
-      #34d399 0%,
-      #a3e635 25%,
-      #fbbf24 50%,
-      #f97316 75%,
-      #ef4444 100%
-    );
-    transition: width 1s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-
   .severity-needle {
     position: absolute;
-    top: -4px;
-    width: 3px;
-    height: 16px;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
     background: white;
-    border-radius: 2px;
-    box-shadow: 0 0 8px rgba(255,255,255,0.5);
-    transition: left 1s cubic-bezier(0.16, 1, 0.3, 1);
+    border: 3px solid var(--bg-card);
+    box-shadow:
+      0 0 0 2px rgba(255,255,255,0.3),
+      0 2px 8px rgba(0,0,0,0.5);
+    transition: left 1.2s cubic-bezier(0.16, 1, 0.3, 1);
     z-index: 2;
   }
 
   .severity-labels {
     display: flex;
     justify-content: space-between;
-    margin-top: 5px;
+    margin-top: 8px;
+    padding: 0 2px;
   }
 
   .severity-labels span {
@@ -245,6 +226,13 @@
     text-transform: uppercase;
     letter-spacing: 0.8px;
     color: var(--text-muted);
+    opacity: 0.6;
+    transition: opacity 0.3s;
+  }
+
+  .severity-labels span.active {
+    opacity: 1;
+    color: var(--sev-color);
   }
 
   /* === SERVICE DOT GRID === */
@@ -468,8 +456,10 @@
     const circumference = 157;
     const offset = circumference - (circumference * score / 100);
 
-    // Needle position on severity bar (inverted: 100% health = left, 0% = right)
+    // Needle position: 0% health = right (critical), 100% health = left (healthy)
     const needlePos = 100 - score;
+    // Determine which label to highlight
+    const activeLabel = score >= 90 ? 0 : score >= 70 ? 1 : score >= 50 ? 2 : score >= 25 ? 3 : 4;
 
     // Service dots
     let dotsHtml = '<span class="dot-grid-label">Services</span>';
@@ -487,6 +477,11 @@
           </div>
         </div>`;
     }
+
+    const labels = ['Healthy', 'Minor', 'Degraded', 'Outage', 'Critical'];
+    const labelsHtml = labels.map((l, i) =>
+      `<span class="${i === activeLabel ? 'active' : ''}">${l}</span>`
+    ).join('');
 
     banner.innerHTML = `
       <div class="banner-top">
@@ -509,16 +504,11 @@
       </div>
 
       <div class="severity-bar-wrapper">
-        <div class="severity-bar">
-          <div class="severity-bar-fill" style="width: ${score}%"></div>
-          <div class="severity-needle" style="left: calc(${needlePos}% - 1.5px)"></div>
+        <div class="severity-track">
+          <div class="severity-needle" style="left: ${needlePos}%"></div>
         </div>
         <div class="severity-labels">
-          <span>Healthy</span>
-          <span>Minor</span>
-          <span>Degraded</span>
-          <span>Outage</span>
-          <span>Critical</span>
+          ${labelsHtml}
         </div>
       </div>
 
