@@ -495,17 +495,26 @@
   }
 
   function getServiceLabel(service) {
-    // Shorten names for the widget display
-    return service.name
-      .replace(/\s*\(.*?\)\s*/g, '')
-      .replace('Outlook REST API', 'Outlook 365 API')
-      .replace('Outlook Mail API', 'Outlook Mail')
-      .replace('Microsoft ', 'M365 ')
-      .replace('Outlook Mobile Sync', 'Mobile Sync')
-      .replace('Outlook DNS', 'Mail Exchange (MX)')
-      .replace('Outlook MX', 'Mail Delivery (MX)')
-      .replace('Outlook SMTP', 'SMTP Outbound')
-      .replace('Outlook IMAP', 'IMAP Access');
+    const map = {
+      'Outlook Webmail': 'Outlook Webmail',
+      'Outlook Web': 'Outlook Webmail',
+      'Outlook Login': 'Outlook Login',
+      'Azure AD Auth': 'Azure AD Auth',
+      'Office.com Portal': 'Office.com Portal',
+      'Microsoft 365 Portal': 'Office.com Portal',
+      'Outlook 365 Portal': 'Outlook 365 Mail',
+      'Outlook Office': 'Outlook 365 Mail',
+      'Outlook Mobile Sync': 'Mobile Sync',
+      'Microsoft Graph API': 'Graph API',
+      'Outlook MX (Mail Delivery)': 'Mail Delivery (MX)',
+      'Outlook DNS (MX via TCP)': 'Mail Exchange (MX)',
+      'Outlook SMTP (Port 587)': 'SMTP Outbound',
+      'Outlook IMAP': 'IMAP Access',
+      'Outlook REST API': 'Outlook REST API',
+      'Outlook Mail API': 'Outlook Mail',
+    };
+    const cleaned = service.name.replace(/\s*\(.*?\)\s*/g, '');
+    return map[service.name] || map[cleaned] || cleaned;
   }
 
   function getStatusClass(service) {

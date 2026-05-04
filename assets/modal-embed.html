@@ -291,19 +291,26 @@
   }
 
   function shortName(name) {
-    return name
-      .replace(/\s*\(.*?\)\s*/g, '')
-      .replace('Microsoft ', '')
-      .replace('Outlook ', '')
-      .replace('REST API', 'API')
-      .replace('Mail API', 'Mail')
-      .replace('Mobile Sync', 'Sync')
-      .replace('MX (Mail Delivery)', 'MX')
-      .replace('DNS (MX via TCP)', 'MX')
-      .replace('SMTP (Port 587)', 'SMTP')
-      .replace('Azure AD Auth', 'Azure AD')
-      .replace('Graph API', 'Graph')
-      .replace('365 Portal', 'M365');
+    const map = {
+      'Outlook Webmail': 'Webmail',
+      'Outlook Web': 'Webmail',
+      'Outlook Login': 'Login',
+      'Azure AD Auth': 'Azure AD',
+      'Office.com Portal': 'Office.com',
+      'Microsoft 365 Portal': 'Office.com',
+      'Outlook 365 Portal': 'O365 Mail',
+      'Outlook Office': 'O365 Mail',
+      'Outlook Mobile Sync': 'Mobile Sync',
+      'Microsoft Graph API': 'Graph API',
+      'Outlook MX (Mail Delivery)': 'MX Inbound',
+      'Outlook DNS (MX via TCP)': 'MX Inbound',
+      'Outlook SMTP (Port 587)': 'SMTP Out',
+      'Outlook IMAP': 'IMAP',
+      'Outlook REST API': 'REST API',
+      'Outlook Mail API': 'Mail API',
+    };
+    const cleaned = name.replace(/\s*\(.*?\)\s*/g, '');
+    return map[name] || map[cleaned] || cleaned;
   }
 
   function barColor(score) {

@@ -424,22 +424,30 @@
   }
 
   function getShortName(name) {
-    return name
-      .replace(/\s*\(.*?\)\s*/g, '')
-      .replace('Microsoft ', '')
-      .replace('Outlook ', '')
-      .replace('Exchange ', '')
-      .replace('Azure AD ', 'AD ')
-      .replace(' Portal', '')
-      .replace(' API', '')
-      .replace('REST ', '')
-      .replace('Mail ', '')
-      .replace('Mobile Sync', 'Sync')
-      .replace('Graph', 'Graph API')
-      .replace('MX (Mail Delivery)', 'MX')
-      .replace('DNS (MX via TCP)', 'MX')
-      .replace('SMTP (Port 587)', 'SMTP')
-      .replace('SMTP Outbound', 'SMTP');
+    // Explicit short names to avoid ambiguity
+    const map = {
+      'Outlook Webmail': 'Webmail',
+      'Outlook Web': 'Webmail',
+      'Outlook Login': 'Login',
+      'Azure AD Auth': 'Azure AD',
+      'Office.com Portal': 'Office.com',
+      'Microsoft 365 Portal': 'Office.com',
+      'Outlook 365 Portal': 'O365 Mail',
+      'Outlook Office': 'O365 Mail',
+      'Outlook Mobile Sync': 'Mobile Sync',
+      'Microsoft Graph API': 'Graph API',
+      'Outlook MX (Mail Delivery)': 'MX Inbound',
+      'Outlook DNS (MX via TCP)': 'MX Inbound',
+      'Outlook SMTP (Port 587)': 'SMTP Out',
+      'Outlook IMAP': 'IMAP',
+      'Outlook REST API': 'REST API',
+      'Outlook Mail API': 'Mail API',
+    };
+    // Try exact match first, then partial
+    if (map[name]) return map[name];
+    const cleaned = name.replace(/\s*\(.*?\)\s*/g, '');
+    if (map[cleaned]) return map[cleaned];
+    return cleaned;
   }
 
   function render(services) {
