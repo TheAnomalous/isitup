@@ -185,22 +185,19 @@
     } else if (degraded) {
       icon = '!'; iconCls = 'slow';
       headline = 'Email May Be Delayed'; headlineCls = 'slow';
-      body = 'Microsoft is experiencing minor issues that may delay email delivery. Your loan file is still being actively worked. If you need a quick response, please call us directly:';
+      body = 'Microsoft is experiencing minor issues that may delay email delivery. Our team is still working on your files. If you need a quick response, please call your loan officer directly — find their number on our <a href="https://mortgageonegr.com/team/" target="_blank" style="color:#0055a4;font-weight:600;">Meet The Team</a> page.';
       dotCls = 'alert';
     } else {
       icon = '✕'; iconCls = 'down';
       headline = 'Email Is Currently Down'; headlineCls = 'down';
-      body = 'A widespread Microsoft Outlook outage is preventing us from sending or receiving email. Your loan file is still being actively worked — this does not affect our internal systems. For anything time-sensitive, please call us directly:';
+      body = 'A widespread Microsoft Outlook outage is preventing us from sending or receiving email. Our team is still working on your files. For anything time-sensitive, please call your loan officer or team directly — find their number on our <a href="https://mortgageonegr.com/team/" target="_blank" style="color:#0055a4;font-weight:600;">Meet The Team</a> page.';
       dotCls = 'alert';
     }
-
-    const showPhone = !allUp;
 
     el.innerHTML = `
       <div class="status-icon ${iconCls}">${icon}</div>
       <div class="status-headline ${headlineCls}">${headline}</div>
       <div class="status-body">${body}</div>
-      ${showPhone ? '<a class="phone-cta" href="tel:+16169573480">📞 (616) 957-3480</a><br>' : ''}
       <a class="details-link" href="https://theanomalous.github.io/isitup/widget.html" target="_blank">View Detailed Status →</a>
       <div class="status-footer">
         <div class="status-dot ${dotCls}"></div>
