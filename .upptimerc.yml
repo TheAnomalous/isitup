@@ -2,25 +2,71 @@ owner: TheAnomalous
 repo: isitup
 
 sites:
-  - name: Google
-    url: https://www.google.com
-  - name: Wikipedia
-    url: https://en.wikipedia.org
-  - name: Hacker News
-    url: https://news.ycombinator.com
-  - name: Microsoft Outlook
+  - name: Outlook Web (outlook.live.com)
     url: https://outlook.live.com
-  - name: Microsoft 365
+    maxResponseTime: 10000
+    icon: https://upload.wikimedia.org/wikipedia/commons/d/df/Microsoft_Office_Outlook_%282018%E2%80%93present%29.svg
+
+  - name: Outlook Login (login.live.com)
+    url: https://login.live.com
+    maxResponseTime: 10000
+
+  - name: Azure AD Auth (login.microsoftonline.com)
+    url: https://login.microsoftonline.com
+    maxResponseTime: 10000
+
+  - name: Outlook REST API (outlook.office365.com)
+    url: https://outlook.office365.com
+    maxResponseTime: 10000
+
+  - name: Outlook Mail API (outlook.office.com)
+    url: https://outlook.office.com
+    maxResponseTime: 10000
+
+  - name: Exchange Autodiscover
+    url: https://autodiscover-s.outlook.com/autodiscover/healthcheck.htm
+    maxResponseTime: 15000
+
+  - name: Microsoft 365 Portal
     url: https://www.office.com
+    maxResponseTime: 10000
+
+  - name: Outlook Mobile Sync (substrate.office.com)
+    url: https://substrate.office.com
+    maxResponseTime: 15000
+    expectedStatusCodes:
+      - 200
+      - 302
+      - 401
+      - 403
+
+  - name: Microsoft Graph API
+    url: https://graph.microsoft.com/v1.0/$metadata
+    maxResponseTime: 10000
+
+  - name: Outlook DNS (MX via TCP)
+    url: outlook-com.olc.protection.outlook.com
+    port: 25
+    check: tcp-ping
+
+assignees:
+  - TheAnomalous
 
 status-website:
   baseUrl: /isitup
-  name: Is It Up?
-  introTitle: "**Is It Up?** — Real-time uptime monitoring powered by GitHub."
-  introMessage: This status page uses real-time data from our [GitHub repository](https://github.com/TheAnomalous/isitup). Powered by [Upptime](https://github.com/upptime/upptime).
+  name: Is Outlook Up?
   theme: dark
+  introTitle: "**Is Outlook Up?** Real-time Microsoft Outlook uptime monitoring."
+  introMessage: "Comprehensive monitoring of all Microsoft Outlook and Exchange Online endpoints. Checks every 5 min. Powered by [Upptime](https://github.com/upptime/upptime)."
   navbar:
     - title: Status
       href: /
     - title: GitHub
       href: https://github.com/$OWNER/$REPO
+
+workflowSchedule:
+  - "*/5 * * * *"
+  - "0 */6 * * *"
+  - "0 0 * * *"
+  - "0 0 * * *"
+  - "0 0 * * *"
