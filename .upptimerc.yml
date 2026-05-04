@@ -2,8 +2,8 @@ owner: TheAnomalous
 repo: isitup
 
 sites:
-  # === OUTLOOK WEB INTERFACES ===
-  - name: Outlook Web
+  # === OUTLOOK WEB ===
+  - name: Outlook Webmail
     url: https://outlook.live.com
     maxResponseTime: 10000
     expectedStatusCodes:
@@ -12,24 +12,8 @@ sites:
       - 302
     icon: https://upload.wikimedia.org/wikipedia/commons/d/df/Microsoft_Office_Outlook_%282018%E2%80%93present%29.svg
 
-  - name: Outlook 365 Portal
-    url: https://outlook.office365.com
-    maxResponseTime: 10000
-    expectedStatusCodes:
-      - 200
-      - 301
-      - 302
-
-  - name: Outlook Office
-    url: https://outlook.office.com
-    maxResponseTime: 10000
-    expectedStatusCodes:
-      - 200
-      - 301
-      - 302
-
   # === AUTHENTICATION ===
-  - name: Outlook Login (login.live.com)
+  - name: Outlook Login
     url: https://login.live.com
     maxResponseTime: 10000
     expectedStatusCodes:
@@ -46,7 +30,7 @@ sites:
       - 302
 
   # === BACKEND SERVICES ===
-  - name: Microsoft 365 Portal
+  - name: Office.com Portal
     url: https://www.office.com
     maxResponseTime: 10000
     expectedStatusCodes:
