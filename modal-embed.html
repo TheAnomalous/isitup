@@ -21,34 +21,39 @@
     max-width: 440px;
     margin: 0 auto;
     text-align: center;
-    padding: 0;
+    padding: 10px 0 0;
   }
 
   /* === ICON === */
   .status-icon {
-    width: 56px;
-    height: 56px;
+    width: 48px;
+    height: 48px;
     border-radius: 50%;
-    margin: 0 auto 12px;
+    margin: 0 auto 14px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 26px;
+    font-size: 22px;
+    font-weight: 800;
+    line-height: 1;
   }
 
   .status-icon.down {
     background: #fee2e2;
+    color: #dc2626;
     box-shadow: 0 0 0 4px #fecaca;
     animation: pulse 2s ease-in-out infinite;
   }
 
   .status-icon.ok {
     background: #dcfce7;
+    color: #16a34a;
     box-shadow: 0 0 0 4px #bbf7d0;
   }
 
   .status-icon.slow {
     background: #fef3c7;
+    color: #d97706;
     box-shadow: 0 0 0 4px #fde68a;
   }
 
@@ -173,17 +178,17 @@
     let icon, iconCls, headline, headlineCls, body, dotCls;
 
     if (allUp) {
-      icon = '✅'; iconCls = 'ok';
+      icon = '✓'; iconCls = 'ok';
       headline = 'Email Is Working'; headlineCls = 'ok';
       body = 'Our email is fully operational. You can send us a message and expect a timely response.';
       dotCls = 'live';
     } else if (degraded) {
-      icon = '⚠️'; iconCls = 'slow';
+      icon = '!'; iconCls = 'slow';
       headline = 'Email May Be Delayed'; headlineCls = 'slow';
       body = 'Microsoft is experiencing minor issues that may delay email delivery. Your loan file is still being actively worked. If you need a quick response, please call us directly:';
       dotCls = 'alert';
     } else {
-      icon = '🚫'; iconCls = 'down';
+      icon = '✕'; iconCls = 'down';
       headline = 'Email Is Currently Down'; headlineCls = 'down';
       body = 'A widespread Microsoft Outlook outage is preventing us from sending or receiving email. Your loan file is still being actively worked — this does not affect our internal systems. For anything time-sensitive, please call us directly:';
       dotCls = 'alert';
@@ -195,7 +200,7 @@
       <div class="status-icon ${iconCls}">${icon}</div>
       <div class="status-headline ${headlineCls}">${headline}</div>
       <div class="status-body">${body}</div>
-      ${showPhone ? '<a class="phone-cta" href="tel:+16168554300">📞 (616) 855-4300</a><br>' : ''}
+      ${showPhone ? '<a class="phone-cta" href="tel:+16169573480">📞 (616) 957-3480</a><br>' : ''}
       <a class="details-link" href="https://theanomalous.github.io/isitup/widget.html" target="_blank">View Detailed Status →</a>
       <div class="status-footer">
         <div class="status-dot ${dotCls}"></div>
