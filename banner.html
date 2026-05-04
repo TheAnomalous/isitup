@@ -403,10 +403,22 @@
     { min: 70, label: 'Degraded',           headline: 'Some Services Degraded',      hue: 48  },
     { min: 50, label: 'Partial Outage',     headline: 'Partial Outage Detected',     hue: 30  },
     { min: 25, label: 'Major Outage',       headline: 'Major Outage In Progress',    hue: 15  },
-    { min: 0,  label: 'Critical',           headline: 'Critical Outage — Multiple Services Down', hue: 0 }
+    { min: 0,  label: 'Critical',           headline: 'Critical — Email Is Down',    hue: 0   }
   ];
 
-  function getSeverity(score) {
+  // These keywords in service names indicate CORE email functionality.
+  // If any of these are down, email is effectively broken.
+  const CRITICAL_KEYWORDS = ['webmail', 'outlook web', 'outlook office', '365 portal', 'mobile sync'];
+
+  function isCriticalService(name) {
+    const lower = name.toLowerCase();
+    return CRITICAL_KEYWORDS.some(kw => lower.includes(kw));
+  }
+
+  function getSeverity(score, emailDown) {
+    if (emailDown) {
+      return { min: 0, label: 'Email Down', headline: 'Email Service Is Down', hue: 0 };
+    }
     for (const s of SEVERITY) {
       if (score >= s.min) return s;
     }
@@ -414,38 +426,51 @@
   }
 
   function calcHealthScore(services) {
-    if (!services.length) return 0;
+    if (!services.length) return { score: 0, emailDown: false };
     let score = 0;
+    let emailDown = false;
     for (const s of services) {
       if (s.status === 'up') score += 100;
       else if (s.status === 'degraded') score += 50;
+      else if (isCriticalService(s.name)) emailDown = true;
     }
-    return Math.round(score / services.length);
+    score = Math.round(score / services.length);
+    // If core email services are down, cap the score to reflect reality
+    if (emailDown) score = Math.min(score, 25);
+    return { score, emailDown };
   }
 
   function getShortName(name) {
-    return name
-      .replace(/\s*\(.*?\)\s*/g, '')
-      .replace('Microsoft ', '')
-      .replace('Outlook ', '')
-      .replace('Exchange ', '')
-      .replace('Azure AD ', 'AD ')
-      .replace(' Portal', '')
-      .replace(' API', '')
-      .replace('REST ', '')
-      .replace('Mail ', '')
-      .replace('Mobile Sync', 'Sync')
-      .replace('Graph', 'Graph API')
-      .replace('MX (Mail Delivery)', 'MX')
-      .replace('DNS (MX via TCP)', 'MX')
-      .replace('SMTP (Port 587)', 'SMTP')
-      .replace('SMTP Outbound', 'SMTP');
+    // Explicit short names to avoid ambiguity
+    const map = {
+      'Outlook Webmail': 'Webmail',
+      'Outlook Web': 'Webmail',
+      'Outlook Login': 'Login',
+      'Azure AD Auth': 'Azure AD',
+      'Office.com Portal': 'Office.com',
+      'Microsoft 365 Portal': 'Office.com',
+      'Outlook 365 Portal': 'O365 Mail',
+      'Outlook Office': 'O365 Mail',
+      'Outlook Mobile Sync': 'Mobile Sync',
+      'Microsoft Graph API': 'Graph API',
+      'Outlook MX (Mail Delivery)': 'MX Inbound',
+      'Outlook DNS (MX via TCP)': 'MX Inbound',
+      'Outlook SMTP (Port 587)': 'SMTP Out',
+      'Outlook IMAP': 'IMAP',
+      'Outlook REST API': 'REST API',
+      'Outlook Mail API': 'Mail API',
+    };
+    // Try exact match first, then partial
+    if (map[name]) return map[name];
+    const cleaned = name.replace(/\s*\(.*?\)\s*/g, '');
+    if (map[cleaned]) return map[cleaned];
+    return cleaned;
   }
 
   function render(services) {
     const banner = document.getElementById('banner');
-    const score = calcHealthScore(services);
-    const sev = getSeverity(score);
+    const { score, emailDown } = calcHealthScore(services);
+    const sev = getSeverity(score, emailDown);
     const upCount = services.filter(s => s.status === 'up').length;
     const total = services.length;
 
