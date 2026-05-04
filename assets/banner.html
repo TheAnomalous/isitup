@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Outlook Status Banner</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* severity palette — computed dynamically */
+    --sev-hue: 145;
+    --sev-sat: 60%;
+    --sev-light: 55%;
+    --sev-color: hsl(var(--sev-hue), var(--sev-sat), var(--sev-light));
+    --sev-bg: hsla(var(--sev-hue), var(--sev-sat), var(--sev-light), 0.06);
+    --sev-glow: hsla(var(--sev-hue), var(--sev-sat), var(--sev-light), 0.15);
+    --sev-border: hsla(var(--sev-hue), var(--sev-sat), var(--sev-light), 0.12);
+
+    --bg: #0a0e1a;
+    --bg-card: rgba(12, 16, 28, 0.92);
+    --border: rgba(255,255,255,0.05);
+    --text: #e8ecf4;
+    --text-dim: #8892a8;
+    --text-muted: #5a6478;
+    --up: #34d399;
+    --down: #f87171;
+    --degraded: #fbbf24;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    -webkit-font-smoothing: antialiased;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 20px;
+  }
+
+  /* === BANNER === */
+  .banner {
+    width: 100%;
+    max-width: 720px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    backdrop-filter: blur(20px);
+    box-shadow:
+      0 0 0 1px rgba(255,255,255,0.02),
+      0 4px 30px rgba(0,0,0,0.4);
+    transition: box-shadow 0.5s ease, border-color 0.5s ease;
+  }
+
+  .banner:hover {
+    border-color: var(--sev-border);
+    box-shadow:
+      0 0 0 1px rgba(255,255,255,0.03),
+      0 4px 40px rgba(0,0,0,0.5),
+      0 0 40px var(--sev-glow);
+  }
+
+  /* === TOP ROW: Severity gauge + Score + Status text === */
+  .banner-top {
+    display: flex;
+    align-items: center;
+    padding: 16px 20px 12px;
+    gap: 16px;
+  }
+
+  /* Score ring */
+  .score-ring {
+    width: 56px;
+    height: 56px;
+    position: relative;
+    flex-shrink: 0;
+  }
+
+  .score-ring svg {
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
+  }
+
+  .score-ring-bg {
+    fill: none;
+    stroke: rgba(255,255,255,0.04);
+    stroke-width: 4;
+  }
+
+  .score-ring-fill {
+    fill: none;
+    stroke: var(--sev-color);
+    stroke-width: 4;
+    stroke-linecap: round;
+    stroke-dasharray: 157;
+    stroke-dashoffset: 157;
+    transition: stroke-dashoffset 1.2s cubic-bezier(0.16, 1, 0.3, 1),
+                stroke 0.5s ease;
+    filter: drop-shadow(0 0 4px var(--sev-glow));
+  }
+
+  .score-value {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--sev-color);
+    letter-spacing: -0.5px;
+    transition: color 0.5s ease;
+  }
+
+  .score-value .pct {
+    font-size: 9px;
+    font-weight: 700;
+    opacity: 0.7;
+    margin-left: 1px;
+  }
+
+  /* Status text block */
+  .status-text {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .status-headline {
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+    color: var(--sev-color);
+    transition: color 0.5s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .status-headline .pulse {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--sev-color);
+    animation: pulse 2s ease-in-out infinite;
+    flex-shrink: 0;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; box-shadow: 0 0 0 0 var(--sev-glow); }
+    50% { opacity: 0.5; box-shadow: 0 0 0 6px transparent; }
+  }
+
+  .status-detail {
+    font-size: 11.5px;
+    color: var(--text-dim);
+    margin-top: 3px;
+    font-weight: 500;
+  }
+
+  /* Severity label badge */
+  .severity-badge {
+    flex-shrink: 0;
+    padding: 5px 12px;
+    border-radius: 8px;
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    background: var(--sev-bg);
+    color: var(--sev-color);
+    border: 1px solid var(--sev-border);
+    transition: all 0.5s ease;
+  }
+
+  /* === SEVERITY GRADIENT BAR === */
+  .severity-bar-wrapper {
+    padding: 0 20px 14px;
+  }
+
+  .severity-bar {
+    height: 8px;
+    border-radius: 4px;
+    background: linear-gradient(90deg,
+      #34d399 0%,
+      #a3e635 25%,
+      #fbbf24 50%,
+      #f97316 75%,
+      #ef4444 100%
+    );
+    position: relative;
+    overflow: visible;
+  }
+
+  .severity-bar::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 4px;
+    background: rgba(0,0,0,0.55);
+  }
+
+  .severity-bar-fill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    border-radius: 4px;
+    background: linear-gradient(90deg,
+      #34d399 0%,
+      #a3e635 25%,
+      #fbbf24 50%,
+      #f97316 75%,
+      #ef4444 100%
+    );
+    transition: width 1s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .severity-needle {
+    position: absolute;
+    top: -4px;
+    width: 3px;
+    height: 16px;
+    background: white;
+    border-radius: 2px;
+    box-shadow: 0 0 8px rgba(255,255,255,0.5);
+    transition: left 1s cubic-bezier(0.16, 1, 0.3, 1);
+    z-index: 2;
+  }
+
+  .severity-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 5px;
+  }
+
+  .severity-labels span {
+    font-size: 8px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--text-muted);
+  }
+
+  /* === SERVICE DOT GRID === */
+  .dot-grid {
+    display: flex;
+    align-items: center;
+    padding: 10px 20px 14px;
+    gap: 6px;
+    border-top: 1px solid var(--border);
+    flex-wrap: wrap;
+  }
+
+  .dot-grid-label {
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-muted);
+    margin-right: 6px;
+  }
+
+  .service-pip {
+    position: relative;
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: default;
+    transition: transform 0.2s, background 0.3s;
+  }
+
+  .service-pip:hover {
+    transform: scale(1.2);
+    z-index: 2;
+  }
+
+  .service-pip .pip-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    transition: background 0.3s, box-shadow 0.3s;
+  }
+
+  .service-pip.up { background: rgba(52, 211, 153, 0.08); }
+  .service-pip.up .pip-dot { background: var(--up); box-shadow: 0 0 6px rgba(52,211,153,0.4); }
+  .service-pip.down { background: rgba(248, 113, 113, 0.12); }
+  .service-pip.down .pip-dot { background: var(--down); box-shadow: 0 0 6px rgba(248,113,113,0.5); animation: pulse 1.5s ease-in-out infinite; }
+  .service-pip.degraded { background: rgba(251, 191, 36, 0.1); }
+  .service-pip.degraded .pip-dot { background: var(--degraded); box-shadow: 0 0 6px rgba(251,191,36,0.4); }
+
+  /* Tooltip */
+  .service-pip .pip-tip {
+    position: absolute;
+    bottom: calc(100% + 6px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: #1e2538;
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 6px;
+    padding: 5px 8px;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--text);
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s;
+    z-index: 10;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  }
+
+  .service-pip .pip-tip::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 4px solid transparent;
+    border-top-color: #1e2538;
+  }
+
+  .service-pip:hover .pip-tip {
+    opacity: 1;
+  }
+
+  .pip-tip-status {
+    font-size: 9px;
+    font-weight: 500;
+    margin-top: 2px;
+  }
+
+  .pip-tip-status.up { color: var(--up); }
+  .pip-tip-status.down { color: var(--down); }
+  .pip-tip-status.degraded { color: var(--degraded); }
+
+  /* === FOOTER === */
+  .banner-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 20px 10px;
+    border-top: 1px solid var(--border);
+  }
+
+  .banner-footer span {
+    font-size: 9px;
+    color: var(--text-muted);
+    font-weight: 500;
+  }
+
+  .banner-footer a {
+    font-size: 9px;
+    color: #818cf8;
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  .banner-footer a:hover { opacity: 0.8; }
+
+  /* === LOADING === */
+  .loading {
+    padding: 30px;
+    text-align: center;
+  }
+
+  .loading-spinner {
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--border);
+    border-top-color: #818cf8;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    margin: 0 auto 8px;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .loading-text {
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+</style>
+</head>
+<body>
+
+<div class="banner" id="banner">
+  <div class="loading">
+    <div class="loading-spinner"></div>
+    <div class="loading-text">Loading status...</div>
+  </div>
+</div>
+
+<script>
+(function() {
+  const CONFIG = {
+    owner: 'TheAnomalous',
+    repo: 'isitup',
+    statusPageUrl: 'https://theanomalous.github.io/isitup/',
+    refreshInterval: 60000
+  };
+
+  // Severity levels mapped to score ranges
+  const SEVERITY = [
+    { min: 95, label: 'Operational',        headline: 'All Systems Operational',     hue: 145 },
+    { min: 85, label: 'Minor Issue',        headline: 'Minor Service Disruption',    hue: 85  },
+    { min: 70, label: 'Degraded',           headline: 'Some Services Degraded',      hue: 48  },
+    { min: 50, label: 'Partial Outage',     headline: 'Partial Outage Detected',     hue: 30  },
+    { min: 25, label: 'Major Outage',       headline: 'Major Outage In Progress',    hue: 15  },
+    { min: 0,  label: 'Critical',           headline: 'Critical Outage — Multiple Services Down', hue: 0 }
+  ];
+
+  function getSeverity(score) {
+    for (const s of SEVERITY) {
+      if (score >= s.min) return s;
+    }
+    return SEVERITY[SEVERITY.length - 1];
+  }
+
+  function calcHealthScore(services) {
+    if (!services.length) return 0;
+    let score = 0;
+    for (const s of services) {
+      if (s.status === 'up') score += 100;
+      else if (s.status === 'degraded') score += 50;
+    }
+    return Math.round(score / services.length);
+  }
+
+  function getShortName(name) {
+    return name
+      .replace(/\s*\(.*?\)\s*/g, '')
+      .replace('Microsoft ', '')
+      .replace('Outlook ', '')
+      .replace('Exchange ', '')
+      .replace('Azure AD ', 'AD ')
+      .replace(' Portal', '')
+      .replace(' API', '')
+      .replace('REST ', '')
+      .replace('Mail ', '')
+      .replace('Mobile Sync', 'Sync')
+      .replace('Graph', 'Graph API')
+      .replace('MX (Mail Delivery)', 'MX')
+      .replace('DNS (MX via TCP)', 'MX')
+      .replace('SMTP (Port 587)', 'SMTP')
+      .replace('SMTP Outbound', 'SMTP');
+  }
+
+  function render(services) {
+    const banner = document.getElementById('banner');
+    const score = calcHealthScore(services);
+    const sev = getSeverity(score);
+    const upCount = services.filter(s => s.status === 'up').length;
+    const total = services.length;
+
+    // Set CSS variables for the severity color
+    document.documentElement.style.setProperty('--sev-hue', sev.hue);
+
+    // Score ring arc: circumference = 2 * PI * 25 ≈ 157
+    const circumference = 157;
+    const offset = circumference - (circumference * score / 100);
+
+    // Needle position on severity bar (inverted: 100% health = left, 0% = right)
+    const needlePos = 100 - score;
+
+    // Service dots
+    let dotsHtml = '<span class="dot-grid-label">Services</span>';
+    for (const s of services) {
+      const cls = s.status === 'up' ? 'up' : s.status === 'degraded' ? 'degraded' : 'down';
+      const shortName = getShortName(s.name);
+      const uptimeStr = s.uptimeDay || s.uptime || '—';
+      const statusLabel = s.status === 'up' ? '● UP' : s.status === 'degraded' ? '◐ SLOW' : '○ DOWN';
+      dotsHtml += `
+        <div class="service-pip ${cls}">
+          <div class="pip-dot"></div>
+          <div class="pip-tip">
+            ${shortName}
+            <div class="pip-tip-status ${cls}">${statusLabel} · ${uptimeStr}</div>
+          </div>
+        </div>`;
+    }
+
+    banner.innerHTML = `
+      <div class="banner-top">
+        <div class="score-ring">
+          <svg viewBox="0 0 56 56">
+            <circle class="score-ring-bg" cx="28" cy="28" r="25"/>
+            <circle class="score-ring-fill" cx="28" cy="28" r="25"
+              style="stroke-dashoffset: ${offset}"/>
+          </svg>
+          <div class="score-value">${score}<span class="pct">%</span></div>
+        </div>
+        <div class="status-text">
+          <div class="status-headline">
+            <span class="pulse"></span>
+            ${sev.headline}
+          </div>
+          <div class="status-detail">${upCount} of ${total} endpoints responding · Updated just now</div>
+        </div>
+        <div class="severity-badge">${sev.label}</div>
+      </div>
+
+      <div class="severity-bar-wrapper">
+        <div class="severity-bar">
+          <div class="severity-bar-fill" style="width: ${score}%"></div>
+          <div class="severity-needle" style="left: calc(${needlePos}% - 1.5px)"></div>
+        </div>
+        <div class="severity-labels">
+          <span>Healthy</span>
+          <span>Minor</span>
+          <span>Degraded</span>
+          <span>Outage</span>
+          <span>Critical</span>
+        </div>
+      </div>
+
+      <div class="dot-grid">${dotsHtml}</div>
+
+      <div class="banner-footer">
+        <span>📧 Microsoft Outlook · Checked every 5 min</span>
+        <a href="${CONFIG.statusPageUrl}" target="_blank">Full dashboard →</a>
+      </div>`;
+  }
+
+  async function fetchStatus() {
+    try {
+      const url = `https://raw.githubusercontent.com/${CONFIG.owner}/${CONFIG.repo}/master/history/summary.json`;
+      const resp = await fetch(url + '?t=' + Date.now());
+      if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+      const data = await resp.json();
+      render(data);
+    } catch (e) {
+      console.error('Fetch failed:', e);
+      document.getElementById('banner').innerHTML = `
+        <div class="loading">
+          <div class="loading-text">⚠️ Unable to load status</div>
+        </div>`;
+    }
+  }
+
+  fetchStatus();
+  setInterval(fetchStatus, CONFIG.refreshInterval);
+})();
+</script>
+</body>
+</html>
