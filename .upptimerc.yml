@@ -2,51 +2,87 @@ owner: TheAnomalous
 repo: isitup
 
 sites:
-  - name: Outlook Web (outlook.live.com)
+  # === OUTLOOK WEB INTERFACES ===
+  - name: Outlook Web
     url: https://outlook.live.com
     maxResponseTime: 10000
+    expectedStatusCodes:
+      - 200
+      - 301
+      - 302
     icon: https://upload.wikimedia.org/wikipedia/commons/d/df/Microsoft_Office_Outlook_%282018%E2%80%93present%29.svg
 
+  - name: Outlook 365 Portal
+    url: https://outlook.office365.com
+    maxResponseTime: 10000
+    expectedStatusCodes:
+      - 200
+      - 301
+      - 302
+
+  - name: Outlook Office
+    url: https://outlook.office.com
+    maxResponseTime: 10000
+    expectedStatusCodes:
+      - 200
+      - 301
+      - 302
+
+  # === AUTHENTICATION ===
   - name: Outlook Login (login.live.com)
     url: https://login.live.com
     maxResponseTime: 10000
+    expectedStatusCodes:
+      - 200
+      - 301
+      - 302
 
-  - name: Azure AD Auth (login.microsoftonline.com)
+  - name: Azure AD Auth
     url: https://login.microsoftonline.com
     maxResponseTime: 10000
+    expectedStatusCodes:
+      - 200
+      - 301
+      - 302
 
-  - name: Outlook REST API (outlook.office365.com)
-    url: https://outlook.office365.com
-    maxResponseTime: 10000
-
-  - name: Outlook Mail API (outlook.office.com)
-    url: https://outlook.office.com
-    maxResponseTime: 10000
-
-  - name: Exchange Autodiscover
-    url: https://autodiscover-s.outlook.com/autodiscover/healthcheck.htm
-    maxResponseTime: 15000
-
+  # === BACKEND SERVICES ===
   - name: Microsoft 365 Portal
     url: https://www.office.com
     maxResponseTime: 10000
+    expectedStatusCodes:
+      - 200
+      - 301
+      - 302
 
-  - name: Outlook Mobile Sync (substrate.office.com)
+  - name: Outlook Mobile Sync
     url: https://substrate.office.com
     maxResponseTime: 15000
     expectedStatusCodes:
       - 200
+      - 301
       - 302
       - 401
       - 403
 
+  # === API ENDPOINTS ===
   - name: Microsoft Graph API
     url: https://graph.microsoft.com/v1.0/$metadata
     maxResponseTime: 10000
 
-  - name: Outlook DNS (MX via TCP)
+  # === MAIL INFRASTRUCTURE ===
+  - name: Outlook MX (Mail Delivery)
     url: outlook-com.olc.protection.outlook.com
     port: 25
+    check: tcp-ping
+
+  - name: Outlook SMTP (Port 587)
+    url: smtp.office365.com
+    port: 587
+    check: tcp-ping
+
+  - name: Outlook IMAP
+    url: outlook.office365.com
+    port: 993
     check: tcp-ping
 
 assignees:
@@ -56,8 +92,8 @@ status-website:
   baseUrl: /isitup
   name: Is Outlook Up?
   theme: dark
-  introTitle: "**Is Outlook Up?** Real-time Microsoft Outlook uptime monitoring."
-  introMessage: "Comprehensive monitoring of all Microsoft Outlook and Exchange Online endpoints. Checks every 5 min. Powered by [Upptime](https://github.com/upptime/upptime)."
+  introTitle: "**Is Outlook Up?** Comprehensive Microsoft Outlook & Exchange monitoring."
+  introMessage: "Real-time monitoring of Outlook web, authentication, APIs, and mail delivery infrastructure. Checks every 5 minutes. Powered by [Upptime](https://github.com/upptime/upptime)."
   navbar:
     - title: Status
       href: /
