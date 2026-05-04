@@ -523,6 +523,13 @@
     return 'down';
   }
 
+  const CRITICAL_KEYWORDS = ['webmail', 'outlook web', 'outlook office', '365 portal', 'mobile sync'];
+
+  function isCriticalDown(services) {
+    return services.some(s => s.status === 'down' &&
+      CRITICAL_KEYWORDS.some(kw => s.name.toLowerCase().includes(kw)));
+  }
+
   function calcOverallUptime(services) {
     const uptimes = services.map(s => parseFloat(s.uptimeDay) || 0);
     return (uptimes.reduce((a, b) => a + b, 0) / uptimes.length).toFixed(1);
@@ -544,9 +551,14 @@
     const total = services.length;
     const overall = calcOverallUptime(services);
 
-    // Banner
+    // Banner — critical override when core email services are down
+    const emailDown = isCriticalDown(services);
     let bannerClass, bannerText, pulseClass;
-    if (downCount === 0 && degradedCount === 0) {
+    if (emailDown) {
+      bannerClass = 'some-down';
+      pulseClass = 'down';
+      bannerText = 'Email Service Is Down';
+    } else if (downCount === 0 && degradedCount === 0) {
       bannerClass = 'all-up';
       pulseClass = 'up';
       bannerText = `All ${total} services operational`;

@@ -273,7 +273,17 @@
     { min: 0,  icon: '🚨', cls: 'critical',    title: 'Critical Outlook Outage',            desc: 'Most Outlook and Exchange services are unresponsive.' }
   ];
 
-  function getSev(score) {
+  const CRITICAL_KEYWORDS = ['webmail', 'outlook web', 'outlook office', '365 portal', 'mobile sync'];
+
+  function isCriticalService(name) {
+    const lower = name.toLowerCase();
+    return CRITICAL_KEYWORDS.some(kw => lower.includes(kw));
+  }
+
+  function getSev(score, emailDown) {
+    if (emailDown) {
+      return { min: 0, icon: '🚨', cls: 'critical', title: 'Email Service Is Down', desc: 'Microsoft Outlook email is currently unavailable. Email cannot be sent or received.' };
+    }
     for (const s of SEVERITY) {
       if (score >= s.min) return s;
     }
@@ -281,13 +291,17 @@
   }
 
   function calcScore(services) {
-    if (!services.length) return 0;
+    if (!services.length) return { score: 0, emailDown: false };
     let score = 0;
+    let emailDown = false;
     for (const s of services) {
       if (s.status === 'up') score += 100;
       else if (s.status === 'degraded') score += 50;
+      else if (isCriticalService(s.name)) emailDown = true;
     }
-    return Math.round(score / services.length);
+    score = Math.round(score / services.length);
+    if (emailDown) score = Math.min(score, 25);
+    return { score, emailDown };
   }
 
   function shortName(name) {
@@ -322,8 +336,8 @@
 
   function render(services) {
     const el = document.getElementById('modalStatus');
-    const score = calcScore(services);
-    const sev = getSev(score);
+    const { score, emailDown } = calcScore(services);
+    const sev = getSev(score, emailDown);
     const upCount = services.filter(s => s.status === 'up').length;
     const total = services.length;
 
