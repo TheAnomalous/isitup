@@ -1,7 +1,7 @@
 url: https://outlook.live.com
-status: down
+status: degraded
 code: 417
-responseTime: 87
-lastUpdated: 2026-05-17T23:16:33.606Z
+responseTime: 12904
+lastUpdated: 2026-05-18T13:36:39.621Z
 startTime: 2026-05-04T16:55:12.776Z
 generator: Upptime <https://github.com/upptime/upptime>
