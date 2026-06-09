@@ -1,7 +1,7 @@
 url: https://substrate.office.com
-status: down
+status: degraded
 code: 417
-responseTime: 103
-lastUpdated: 2026-06-06T23:20:06.890Z
+responseTime: 20745
+lastUpdated: 2026-06-09T16:34:47.997Z
 startTime: 2026-05-04T16:40:14.209Z
 generator: Upptime <https://github.com/upptime/upptime>
